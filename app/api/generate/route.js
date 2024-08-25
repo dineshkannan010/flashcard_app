@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import Stripe from "stripe";
 
 const systemPrompt = `
   You are a flashcard creator, you take in text and create multiple flashcards from it. Make sure to create exactly 10 flashcards.
@@ -29,22 +30,27 @@ const systemPrompt = `
     ]
   }
 `;
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2022-11-15",
+});
 
 export async function POST(req){
-    const openai= OpenAI()
-    const data = await req.text()
+    const openai= new OpenAI();
+    const data = await req.text();
 
-    const completion= await openai.chat.completion.create({
-        messages: [
-            {role: 'system', content: systemPrompt},
-            {role: 'user', content: data},
-        ],
-        model: "gpt-3.5-turbo",
-        response_format: {type:'json_object'},
+    console.log(data)
+    const completion= await openai.chat.completions.create({
+         messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: data },
+    ],
+    model: "gpt-3.5-turbo",
+    response_format: { type: "json_object" },
+  });
+  
+    console.log(completion.choices[0].message.content)
+    const flashcards = JSON.parse(completion.choices[0].message.content);
 
-    })
-
-    const flashcards= JSON.parse(completion.choices[0].message.content)
-
-    return NextResponse.json(flashcards.flashcard)
+    return NextResponse.json(flashcards.flashcards);
 }
+

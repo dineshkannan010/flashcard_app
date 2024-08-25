@@ -1,7 +1,6 @@
 "use client"
-import Image from "next/image";
 import getStripe from "@/utils/get-stripe";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
 import {
   AppBar,
   Box,
@@ -18,15 +17,82 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "@mui/material/styles"; 
 
 export default function Home() {
+  const { isSignedIn } = useUser();
+  const router = useRouter();
+
+  const handleGetStarted = () => {
+    if (!isSignedIn) {
+      alert("You must be signed in to generate flashcards.");
+      return;
+    }
+    router.push("/flashcards");
+  };
+
+  const handleSubmit = async () => {
+    const checkoutSession = await fetch("api/checkout_session", {
+      method: "POST",
+      headers: {
+        origin: "http://localhost:3001",
+      },
+    });
+  };
+
+  const proHandleSubmit = async () => {
+    // $10 subscription plan
+    const checkoutSession = await fetch("api/checkout_session/ten_dollars", {
+      method: "POST",
+      headers: {
+        origin: "http://localhost:3001",
+      },
+    });
+    const checkoutSessionJson = await checkoutSession.json();
+
+    if (checkoutSessionJson.statusCode === 500) {
+      console.error(checkoutSession.message);
+      return;
+    }
+
+    const stripe = await getStripe();
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id,
+    });
+
+    if (error) {
+      console.warn(error.message);
+    }
+  };
+
+  const basicHandleSubmit = async () => {
+    // $5 subscription plan
+    const checkoutSession = await fetch("api/checkout_session/five_dollars", {
+      method: "POST",
+      headers: {
+        origin: "http://localhost:3001",
+      },
+    });
+    const checkoutSessionJson = await checkoutSession.json();
+
+    if (checkoutSessionJson.statusCode === 500) {
+      console.error(checkoutSession.message);
+      return;
+    }
+
+    const stripe = await getStripe();
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id,
+    });
+
+    if (error) {
+      console.warn(error.message);
+    }
+  };
+
+
   const theme = useTheme();
   return (
-    <Container maxWidth="lg">
-      <Head>
-          <title>Flashcard SaaS</title>
-          <meta name="description" content="Create flashcards from your text" />
-      </Head>
-
-      <AppBar
+    <>
+      <Container maxWidth="false" disableGutters>
+        <AppBar
           position="static"
           sx={{ backgroundColor: theme.palette.primary.main }}
         >
@@ -37,7 +103,7 @@ export default function Home() {
               </Typography>
             </Button>
             <SignedOut>
-              <Button color="inherit" href="/sign-in" >
+              <Button color="inherit" href="/sign-in">
                 Login
               </Button>
               <Button color="inherit" href="/sign-up">
@@ -49,7 +115,12 @@ export default function Home() {
             </SignedIn>
           </Toolbar>
         </AppBar>
-
+        <Head>
+          <title>Flashcard SaaS</title>
+          <meta name="description" content="Create flashcards from your text" />
+        </Head>
+      </Container>
+      <Container maxWidth="false">
         <Box
           display="flex"
           flexDirection="column"
@@ -75,11 +146,11 @@ export default function Home() {
             variant="contained"
             color="primary"
             sx={{ mt: 2, padding: "12px 24px" }}
+            onClick={handleGetStarted}
           >
             Get Started!
           </Button>
         </Box>
-
         <Box
           sx={{
             my: 6,
@@ -108,7 +179,7 @@ export default function Home() {
                   Creating flashcards has never been easier.
                 </Typography>
               </Box>
-              </Grid>
+            </Grid>
             <Grid item xs={12} md={4}>
               <Box
                 sx={{
@@ -172,6 +243,7 @@ export default function Home() {
                   Access to basic flashcard features and limited storage.
                 </Typography>
                 <Button
+                  onClick={basicHandleSubmit}
                   variant="contained"
                   color="primary"
                   sx={{ mt: 2 }}
@@ -203,6 +275,7 @@ export default function Home() {
                   variant="contained"
                   color="primary"
                   sx={{ mt: 2 }}
+                  onClick={proHandleSubmit}
                 >
                   Choose Pro
                 </Button>
@@ -210,6 +283,7 @@ export default function Home() {
             </Grid>
           </Grid>
         </Box>
-    </Container>
+      </Container>
+    </>
   );
 }
