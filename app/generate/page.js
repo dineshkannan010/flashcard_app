@@ -40,7 +40,6 @@ export default function Generate() {
 
   const handleSubmit = async () => {
     setLoading(true); // Start loading
-    console.log(loading)
     fetch("api/generate", {
       method: "POST",
       body: text,

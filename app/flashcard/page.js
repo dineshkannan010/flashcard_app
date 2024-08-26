@@ -111,18 +111,19 @@ export default function Flashcard() {
                     <Box
                       sx={{
                         perspective: "1000px",
-                        "& > div": {
+
+                      }}
+                    >
+                      <div style={{
                           width: "100%",
                           height: "200px",
-                          transition: "transform 0.6s",
-                          boxShadow: "0 4px 8px 0 rgba(0,0,0, 0.2)",
-                          transformStyle: "preserve-3d",
                           position: "relative",
-                          transform: flipped[index]
-                            ? "rotateY(180deg)"
-                            : "rotateY(0deg)",
-                        },
-                        "& > div > div": {
+                          transformStyle: "preserve-3d",
+                          transition: "transform 0.6s",
+                          transform: flipped[index] ? "rotateY(180deg)" : "rotateY(0deg)",
+                        }}
+                      >
+                        <div style={{
                           position: "absolute",
                           width: "100%",
                           height: "100%",
@@ -130,21 +131,27 @@ export default function Flashcard() {
                           display: "flex",
                           justifyContent: "center",
                           alignItems: "center",
-                          padding: 2,
+                          padding: "16px",
                           boxSizing: "border-box",
-                        },
-                        "& > div > div:nth-of-type(2)": {
-                          transform: "rotateY(180deg)",
-                        },
-                      }}
-                    >
-                      <div>
-                        <div>
+                          backgroundColor: "white", // Add background color to differentiate sides
+                        }}>
                           <Typography variant="h5" component="div">
                             {flashcard.front}
                           </Typography>
                         </div>
-                        <div>
+                        <div style={{
+                          position: "absolute",
+                          width: "100%",
+                          height: "100%",
+                          backfaceVisibility: "hidden",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          padding: "16px",
+                          boxSizing: "border-box",
+                          backgroundColor: "white", // Add background color to differentiate sides
+                          transform: "rotateY(180deg)", // Rotate back side to align with the flip
+                        }}>
                           <Typography variant="h5" component="div">
                             {flashcard.back}
                           </Typography>
