@@ -98,7 +98,7 @@ export default function Flashcard() {
         </AppBar>
       </Container>
       <Container maxWidth="100vw">
-        <Grid container spacing={3} sx={{ mt: 4 }}>
+        <Grid container spacing={3} sx={{ mt: 4}}>
           {flashcards.map((flashcard, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
               <Card>
@@ -111,7 +111,6 @@ export default function Flashcard() {
                     <Box
                       sx={{
                         perspective: "1000px",
-
                       }}
                     >
                       <div style={{
@@ -133,7 +132,7 @@ export default function Flashcard() {
                           alignItems: "center",
                           padding: "16px",
                           boxSizing: "border-box",
-                          backgroundColor: "white", // Add background color to differentiate sides
+                          backgroundColor: "red", 
                         }}>
                           <Typography variant="h5" component="div">
                             {flashcard.front}
@@ -149,7 +148,7 @@ export default function Flashcard() {
                           alignItems: "center",
                           padding: "16px",
                           boxSizing: "border-box",
-                          backgroundColor: "white", // Add background color to differentiate sides
+                          backgroundColor: "yellow", 
                           transform: "rotateY(180deg)", // Rotate back side to align with the flip
                         }}>
                           <Typography variant="h5" component="div">

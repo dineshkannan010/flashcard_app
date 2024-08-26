@@ -116,7 +116,7 @@ export default function Home() {
           </Toolbar>
         </AppBar>
         <Head>
-          <title>Flashcard SaaS</title>
+          <title>Flashcard App</title>
           <meta name="description" content="Create flashcards from your text" />
         </Head>
       </Container>
@@ -129,7 +129,7 @@ export default function Home() {
           mt={4}
           sx={{
             backgroundColor: theme.palette.background.default,
-            minHeight: "77vh",
+            minHeight: "50vh",
           }}
         >
           <Typography
@@ -137,7 +137,7 @@ export default function Home() {
             gutterBottom
             sx={{ color: theme.palette.primary.main }}
           >
-            Welcome to Flashcard SaaS
+            Welcome to AI generated Flashcard App
           </Typography>
           <Typography variant="h5" gutterBottom>
             The Easiest Way to Make Flashcards From Your Text
